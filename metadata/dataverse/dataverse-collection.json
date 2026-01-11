@@ -1,0 +1,12 @@
+{
+  "name": "CRIS 2026 Research Outputs",
+  "alias": "cris2026",
+  "dataverseContacts": [
+    {
+      "contactEmail": "CONTACT_EMAIL_PLACEHOLDER"
+    }
+  ],
+  "affiliation": "Universidad de Alcalá",
+  "description": "Research outputs and datasets from CRIS 2026 project - Automated deposits via GitHub Actions",
+  "dataverseType": "RESEARCH_PROJECTS"
+}

@@ -1,0 +1,52 @@
+# Creates or updates Zenodo version. 
+
+name: zenodo
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+      
+      - name: Set up Python
+        run: uv python install 3.11
+    
+      - name: Install dependencies
+        run: |
+              cd validation
+              uv sync 
+
+      - name: Run Python script
+        run: |
+              cd validation
+              uv run validate.py
+
+  publish-zenodo:
+      runs-on: ubuntu-latest
+      needs: validate
+      permissions:
+        contents: write  
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        - name: Create a new Zenodo Sandbox record using metadata
+                from repository file .zenodo.json
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            ZENODO_SANDBOX_ACCESS_TOKEN: ${{ secrets.ZENODO_SANDBOX_ACCESS_TOKEN }}
+          uses: zenodraft/action@0.13.3
+          with:
+            # concept: 1234567
+            metadata: metadata/zenodo/.zenodo.json
+            publish: true
+            sandbox: true
+            filenames: README.md
